@@ -1,0 +1,11 @@
+[tool.ruff]
+line-length = 100
+target-version = "py38"
+exclude = ["venv", "__pycache__", ".git", "data"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]  # Erreurs, fautes, imports
+fixable = ["ALL"]
+
+[tool.ruff.format]
+quote-style = "double"
