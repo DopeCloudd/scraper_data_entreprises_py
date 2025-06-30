@@ -16,10 +16,6 @@ def read() -> list[dict]:
     df = pd.read_excel(file_path)
 
     # Filtrer
-    df = df[
-        df["denominationUniteLegale"].notnull() &
-        (df["denominationUniteLegale"].str.strip() != "") &
-        (df["denominationUniteLegale"].str.strip() != "[ND]")
-    ]
+    df = df[df["denominationUniteLegale"].str.strip() != "[ND]"]
 
     return df.to_dict(orient="records")
