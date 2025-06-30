@@ -15,17 +15,17 @@ class LinkedInScraper:
 
     def enrich(self, rows: list[dict]) -> list[dict]:
         for idx, row in enumerate(rows, start=1):
-            prenom = row.get("prenom", "").strip()
-            nom = row.get("nom", "").strip()
-            adresse = row.get("adresse", "").strip()
-            denomination = row.get("denominationUniteLegale", "").strip()
+            prenom = str(row.get("prenom", "")).strip()
+            nom = str(row.get("nom", "")).strip()
+            adresse = str(row.get("adresse", "")).strip()
+            denomination = str(row.get("denominationUniteLegale", "")).strip()
 
             if not prenom or not nom:
                 print(f"[LinkedIn][{idx}] Pas de prénom ou nom pour la recherche")
                 row["linkedin_url"] = ""
                 continue
 
-            # Essaie d'extraire la ville de l'adresse si possible
+            # Essayer d'extraire la ville
             ville = ""
             if adresse:
                 try:

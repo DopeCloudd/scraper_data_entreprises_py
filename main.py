@@ -10,7 +10,7 @@ from app.writers.result_writer import ResultWriter
 def main():
     rows = read()
     # Juste 2 lignes pour le test
-    rows = rows[:2]
+    # rows = rows[:2]
     print(f"Nombre de lignes à traiter : {len(rows)}")
 
     driver = Driver(headless=False)
@@ -47,7 +47,7 @@ def main():
     # Envoi email
     mailer = Mailer("scraper.logpro@gmail.com", "ryop uslc xnbp apvh")
     mailer.send_email(
-        to=["welance.mail@gmail.com", "destinataire2@example.com"],
+        to=["welance.mail@gmail.com", "act2011@hotmail.fr"],
         subject="Données récupérées sur les entreprises",
         body="Voici le fichier avec les données récupérées.",
         attachment="output.xlsx"
