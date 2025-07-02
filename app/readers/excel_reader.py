@@ -7,7 +7,6 @@ def read() -> list[dict]:
     """
     Lit le fichier Excel situé dans ./data/input.xlsx
     et retourne les lignes filtrées :
-    - denominationUniteLegale non vide
     - denominationUniteLegale != '[ND]'
     """
     base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))

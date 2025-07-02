@@ -63,10 +63,10 @@ class PappersScraper:
         if dirigeant:
             parts = dirigeant.split(" ")
             if len(parts) >= 2:
-                nom = parts[-1]
-                prenom = " ".join(parts[:-1])
+                prenom = parts[-1]
+                nom = " ".join(parts[:-1])
             else:
-                nom = dirigeant
+                prenom = dirigeant
 
         return {
             "adresse": adresse,
