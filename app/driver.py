@@ -13,7 +13,9 @@ class Driver:
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
 
-        self.driver = uc.Chrome(use_subprocess=False, version_main=137, options=options)
+        # Let undetected_chromedriver pick the correct driver version for the
+        # installed Chrome to avoid version mismatch errors.
+        self.driver = uc.Chrome(use_subprocess=False, options=options)
 
     def get(self, url: str):
         self.driver.get(url)
