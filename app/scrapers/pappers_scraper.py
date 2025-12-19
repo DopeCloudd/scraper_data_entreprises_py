@@ -1,5 +1,6 @@
-import time
 import logging
+import random
+import time
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -10,6 +11,8 @@ from app.driver import Driver
 
 class PappersScraper:
     BASE_URL = "https://www.pappers.fr/recherche?q="
+    BASE_DELAY_SECONDS = (2.5, 5.0)
+    PAGE_DELAY_SECONDS = (1.5, 3.0)
 
     def __init__(self, driver: Driver):
         self.driver = driver
@@ -22,6 +25,7 @@ class PappersScraper:
                 continue
 
             logging.info("[Pappers][%s] Scraping pour : %s", idx, query)
+            self._sleep_between_requests()
             data = self.scrape(query)
 
             row["adresse"] = data.get("adresse", "")
@@ -34,7 +38,7 @@ class PappersScraper:
         url = self.BASE_URL + query
         logging.info("[Pappers] Ouverture : %s", url)
         self.driver.get(url)
-        time.sleep(2)
+        time.sleep(random.uniform(*self.PAGE_DELAY_SECONDS))
 
         # Si Pappers redirige directement vers la fiche établissement,
         # il n'y a pas de résultat à cliquer.
@@ -44,7 +48,7 @@ class PappersScraper:
                     EC.element_to_be_clickable((By.CSS_SELECTOR, "a.SearchResults_link__Ak3y_"))
                 )
                 first_link.click()
-                time.sleep(2)
+                time.sleep(random.uniform(*self.PAGE_DELAY_SECONDS))
                 logging.info("[Pappers] Clic sur le premier résultat")
             except Exception as exc:
                 logging.warning("[Pappers] Impossible de cliquer sur le premier résultat: %s", exc)
@@ -83,3 +87,6 @@ class PappersScraper:
             "nom": nom,
             "prenom": prenom
         }
+
+    def _sleep_between_requests(self):
+        time.sleep(random.uniform(*self.BASE_DELAY_SECONDS))
