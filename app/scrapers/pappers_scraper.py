@@ -1,4 +1,5 @@
 import time
+import logging
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -17,10 +18,10 @@ class PappersScraper:
         for idx, row in enumerate(rows, start=1):
             query = str(row.get("siret") or row.get("denominationUniteLegale"))
             if not query:
-                print(f"[Pappers][{idx}] Pas de SIRET ou dénomination")
+                logging.warning("[Pappers][%s] Pas de SIRET ou dénomination", idx)
                 continue
 
-            print(f"[Pappers][{idx}] Scraping pour : {query}")
+            logging.info("[Pappers][%s] Scraping pour : %s", idx, query)
             data = self.scrape(query)
 
             row["adresse"] = data.get("adresse", "")
@@ -31,6 +32,7 @@ class PappersScraper:
 
     def scrape(self, query: str) -> dict:
         url = self.BASE_URL + query
+        logging.info("[Pappers] Ouverture : %s", url)
         self.driver.get(url)
         time.sleep(2)
 
@@ -40,24 +42,29 @@ class PappersScraper:
             )
             first_link.click()
             time.sleep(2)
-        except Exception:
-            pass
+            logging.info("[Pappers] Clic sur le premier résultat")
+        except Exception as exc:
+            logging.warning("[Pappers] Impossible de cliquer sur le premier résultat: %s", exc)
 
         try:
             adresse = self.driver.driver.find_element(
                 By.XPATH,
                 "//th[contains(text(), 'Adresse')]/following-sibling::td"
             ).text.strip()
+            logging.info("[Pappers] Adresse trouvée")
         except Exception:
             adresse = ""
+            logging.warning("[Pappers] Adresse non trouvée")
 
         try:
             dirigeant = self.driver.driver.find_element(
                 By.XPATH,
                 "//th[contains(text(), 'Dirigeant')]/following-sibling::td/a"
             ).text.strip()
+            logging.info("[Pappers] Dirigeant trouvé")
         except Exception:
             dirigeant = ""
+            logging.warning("[Pappers] Dirigeant non trouvé")
 
         nom, prenom = "", ""
         if dirigeant:

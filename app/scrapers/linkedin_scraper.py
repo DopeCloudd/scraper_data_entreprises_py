@@ -1,4 +1,5 @@
 import time
+import logging
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -20,7 +21,7 @@ class LinkedInScraper:
             adresse = str(row.get("adresse", "")).strip()
 
             if not prenom or not nom:
-                print(f"[LinkedIn][{idx}] Pas de prénom ou nom pour la recherche")
+                logging.warning("[LinkedIn][%s] Pas de prénom ou nom pour la recherche", idx)
                 row["linkedin_url"] = ""
                 continue
 
@@ -44,7 +45,7 @@ class LinkedInScraper:
 
             query = " ".join(parts)
 
-            print(f"[LinkedIn][{idx}] Recherche LinkedIn pour : {query}")
+            logging.info("[LinkedIn][%s] Recherche LinkedIn pour : %s", idx, query)
             url = self.search(query, nom)
             row["linkedin_url"] = url
 
@@ -52,6 +53,7 @@ class LinkedInScraper:
 
     def search(self, query: str, nom: str) -> str:
         url = self.GOOGLE_SEARCH_URL + query.replace(" ", "+")
+        logging.info("[LinkedIn] Ouverture : %s", url)
         self.driver.get(url)
         time.sleep(2)
 
@@ -64,8 +66,10 @@ class LinkedInScraper:
             for link in results:
                 href = link.get_attribute("href")
                 if href and "linkedin.com/in" in href and nom_lower in href.lower():
+                    logging.info("[LinkedIn] Profil trouvé : %s", href)
                     return href
-        except Exception:
-            pass
+        except Exception as exc:
+            logging.warning("[LinkedIn] Erreur pendant la recherche: %s", exc)
 
+        logging.warning("[LinkedIn] Aucun profil trouvé")
         return ""
