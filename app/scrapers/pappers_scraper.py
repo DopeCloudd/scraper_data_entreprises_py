@@ -36,15 +36,18 @@ class PappersScraper:
         self.driver.get(url)
         time.sleep(2)
 
-        try:
-            first_link = WebDriverWait(self.driver.driver, 5).until(
-                EC.element_to_be_clickable((By.CSS_SELECTOR, "a.SearchResults_link__Ak3y_"))
-            )
-            first_link.click()
-            time.sleep(2)
-            logging.info("[Pappers] Clic sur le premier résultat")
-        except Exception as exc:
-            logging.warning("[Pappers] Impossible de cliquer sur le premier résultat: %s", exc)
+        # Si Pappers redirige directement vers la fiche établissement,
+        # il n'y a pas de résultat à cliquer.
+        if "recherche?q=" in self.driver.driver.current_url:
+            try:
+                first_link = WebDriverWait(self.driver.driver, 5).until(
+                    EC.element_to_be_clickable((By.CSS_SELECTOR, "a.SearchResults_link__Ak3y_"))
+                )
+                first_link.click()
+                time.sleep(2)
+                logging.info("[Pappers] Clic sur le premier résultat")
+            except Exception as exc:
+                logging.warning("[Pappers] Impossible de cliquer sur le premier résultat: %s", exc)
 
         try:
             adresse = self.driver.driver.find_element(
